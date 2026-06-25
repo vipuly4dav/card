@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Vipul Yadav</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* ── Portrait ───────────────────────────────────────────────
+         Drop your watercolor image into this folder and update the
+         filename below (it currently expects ./vipul.jpg). */
+      --portrait: url("./vipul.jpg");
+
+      /* ── Surfaces / type ──────────────────────────────────────── */
+      --page-bg: #ffffff;        /* desktop page behind the card   */
+      --surface: #ffffff;        /* card body / gradient fade-to    */
+      --title: #111827;
+      --body: #4b5563;
+      --btn-bg: #ffffff;
+      --btn-border: #e5e7eb;
+      --btn-text: #111827;
+
+      /* ── Shadows ──────────────────────────────────────────────── */
+      --card-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06),
+                     0 3px 6px -1px rgba(0, 0, 0, 0.06),
+                     0 4px 12px 0 rgba(0, 0, 0, 0.04);
+      --btn-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06),
+                    0 1px 2px -1px rgba(0, 0, 0, 0.06),
+                    0 2px 4px 0 rgba(0, 0, 0, 0.04);
+
+      /* ── Card sizing (desktop) ────────────────────────────────── */
+      --card-width: 380px;
+      --card-radius: 24px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;               /* no scroll, any platform */
+    }
+
+    body {
+      font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--page-bg);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── The card ─────────────────────────────────────────────────
+       The portrait is the card's own background; a gradient fades the
+       lower portion into the surface where the text + buttons live. */
+    /* Interactive dot field behind everything (desktop page background) */
+    #dots {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      width: var(--card-width);
+      height: min(640px, calc(100dvh - 48px));
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      background-color: var(--surface);
+      background-image: var(--portrait);
+      background-size: cover;
+      background-position: center -70px;   /* nudged up so the figure clears the text */
+      background-repeat: no-repeat;
+      box-shadow: var(--card-shadow);
+    }
+
+    /* Gradient fade at the bottom of the image into the surface */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        198deg,
+        transparent 0%,
+        transparent 42%,
+        rgba(255, 255, 255, 0.6) 56%,
+        var(--surface) 70%,
+        var(--surface) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Content block — pushed to the bottom, sits above the gradient */
+    .content {
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      padding: 24px 24px 24px;     /* 24px sides + bottom */
+    }
+
+    .name {
+      color: #212121;
+      font-size: 1.625rem;
+      font-weight: 600;
+      line-height: normal;
+      letter-spacing: -0.0325rem;
+      margin-bottom: 16px;         /* name → bio */
+    }
+
+    .bio {
+      color: #212121;
+      opacity: 0.67;
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.375rem;
+      margin-bottom: 32px;         /* bio → buttons */
+    }
+
+    .actions {
+      display: flex;
+      gap: 16px;                   /* between Email & LinkedIn */
+    }
+
+    .btn {
+      flex: 1 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.25rem;
+      background: #fff;
+      box-shadow: var(--btn-shadow);
+      color: #212121;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: normal;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.08), 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+      outline: none;
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Mobile: the card becomes the page ────────────────────────
+       No card chrome — the portrait fills the screen and the content
+       is anchored to the bottom of the viewport. */
+    @media (max-width: 400px) {
+      .card {
+        width: 100%;
+        height: 100dvh;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .content {
+        padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="dots" aria-hidden="true"></canvas>
+  <main class="card">
+    <div class="content">
+      <h1 class="name">Vipul Yadav</h1>
+      <p class="bio">
+        Lorem ipsum dolor sit amet consectetur. Vitae quam adipiscing urna
+        tortor justo interdum aliquet. Mauris elementum nulla curabitur
+        tristique hac nunc tincidunt. Lectus nisi accumsan
+      </p>
+      <div class="actions">
+        <a class="btn" href="mailto:vipul@example.com">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path opacity="0.2" d="M14.5 7.25V11C14.5 11.1326 14.4473 11.2598 14.3536 11.3536C14.2598 11.4473 14.1326 11.5 14 11.5H8V7.25C8 6.38805 7.65759 5.5614 7.0481 4.9519C6.4386 4.34241 5.61195 4 4.75 4H11.25C12.112 4 12.9386 4.34241 13.5481 4.9519C14.1576 5.5614 14.5 6.38805 14.5 7.25Z" fill="currentColor"/>
+            <path d="M6.5 9.5C6.5 9.63261 6.44732 9.75979 6.35355 9.85355C6.25979 9.94732 6.13261 10 6 10H3.5C3.36739 10 3.24021 9.94732 3.14645 9.85355C3.05268 9.75979 3 9.63261 3 9.5C3 9.36739 3.05268 9.24021 3.14645 9.14645C3.24021 9.05268 3.36739 9 3.5 9H6C6.13261 9 6.25979 9.05268 6.35355 9.14645C6.44732 9.24021 6.5 9.36739 6.5 9.5ZM15 7.25V11C15 11.2652 14.8946 11.5196 14.7071 11.7071C14.5196 11.8946 14.2652 12 14 12H8.5V14C8.5 14.1326 8.44732 14.2598 8.35355 14.3536C8.25979 14.4473 8.13261 14.5 8 14.5C7.86739 14.5 7.74021 14.4473 7.64645 14.3536C7.55268 14.2598 7.5 14.1326 7.5 14V12H2C1.73478 12 1.48043 11.8946 1.29289 11.7071C1.10536 11.5196 1 11.2652 1 11V7.25C1.00116 6.25579 1.39662 5.30264 2.09963 4.59963C2.80264 3.89662 3.75579 3.50116 4.75 3.5H9.5V1.5C9.5 1.36739 9.55268 1.24021 9.64645 1.14645C9.74021 1.05268 9.86739 1 10 1H12C12.1326 1 12.2598 1.05268 12.3536 1.14645C12.4473 1.24021 12.5 1.36739 12.5 1.5C12.5 1.63261 12.4473 1.75979 12.3536 1.85355C12.2598 1.94732 12.1326 2 12 2H10.5V3.5H11.25C12.2442 3.50116 13.1974 3.89662 13.9004 4.59963C14.6034 5.30264 14.9988 6.25579 15 7.25ZM7.5 11V7.25C7.5 6.52065 7.21027 5.82118 6.69454 5.30546C6.17882 4.78973 5.47935 4.5 4.75 4.5C4.02065 4.5 3.32118 4.78973 2.80546 5.30546C2.28973 5.82118 2 6.52065 2 7.25V11H7.5ZM14 7.25C13.9992 6.52091 13.7092 5.82192 13.1936 5.30637C12.6781 4.79082 11.9791 4.50083 11.25 4.5H10.5V9C10.5 9.13261 10.4473 9.25979 10.3536 9.35355C10.2598 9.44732 10.1326 9.5 10 9.5C9.86739 9.5 9.74021 9.44732 9.64645 9.35355C9.55268 9.25979 9.5 9.13261 9.5 9V4.5H7.29688C7.67642 4.85047 7.97926 5.27576 8.18632 5.74905C8.39339 6.22234 8.50019 6.73339 8.5 7.25V11H14V7.25Z" fill="currentColor"/>
+          </svg>
+          Email
+        </a>
+        <a class="btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path opacity="0.2" d="M14 2.5V13.5C14 13.6326 13.9473 13.7598 13.8536 13.8536C13.7598 13.9473 13.6326 14 13.5 14H2.5C2.36739 14 2.24021 13.9473 2.14645 13.8536C2.05268 13.7598 2 13.6326 2 13.5V2.5C2 2.36739 2.05268 2.24021 2.14645 2.14645C2.24021 2.05268 2.36739 2 2.5 2H13.5C13.6326 2 13.7598 2.05268 13.8536 2.14645C13.9473 2.24021 14 2.36739 14 2.5Z" fill="currentColor"/>
+            <path d="M13.5 1.5H2.5C2.23478 1.5 1.98043 1.60536 1.79289 1.79289C1.60536 1.98043 1.5 2.23478 1.5 2.5V13.5C1.5 13.7652 1.60536 14.0196 1.79289 14.2071C1.98043 14.3946 2.23478 14.5 2.5 14.5H13.5C13.7652 14.5 14.0196 14.3946 14.2071 14.2071C14.3946 14.0196 14.5 13.7652 14.5 13.5V2.5C14.5 2.23478 14.3946 1.98043 14.2071 1.79289C14.0196 1.60536 13.7652 1.5 13.5 1.5ZM13.5 13.5H2.5V2.5H13.5V13.5ZM6 7V11C6 11.1326 5.94732 11.2598 5.85355 11.3536C5.75979 11.4473 5.63261 11.5 5.5 11.5C5.36739 11.5 5.24021 11.4473 5.14645 11.3536C5.05268 11.2598 5 11.1326 5 11V7C5 6.86739 5.05268 6.74021 5.14645 6.64645C5.24021 6.55268 5.36739 6.5 5.5 6.5C5.63261 6.5 5.75979 6.55268 5.85355 6.64645C5.94732 6.74021 6 6.86739 6 7ZM11.5 8.75V11C11.5 11.1326 11.4473 11.2598 11.3536 11.3536C11.2598 11.4473 11.1326 11.5 11 11.5C10.8674 11.5 10.7402 11.4473 10.6464 11.3536C10.5527 11.2598 10.5 11.1326 10.5 11V8.75C10.5 8.41848 10.3683 8.10054 10.1339 7.86612C9.89946 7.6317 9.58152 7.5 9.25 7.5C8.91848 7.5 8.60054 7.6317 8.36612 7.86612C8.1317 8.10054 8 8.41848 8 8.75V11C8 11.1326 7.94732 11.2598 7.85355 11.3536C7.75979 11.4473 7.63261 11.5 7.5 11.5C7.36739 11.5 7.24021 11.4473 7.14645 11.3536C7.05268 11.2598 7 11.1326 7 11V7C7.00062 6.87753 7.04617 6.75954 7.12801 6.66843C7.20985 6.57731 7.32228 6.5194 7.44398 6.50568C7.56569 6.49196 7.68819 6.52339 7.78826 6.594C7.88833 6.66461 7.959 6.76949 7.98688 6.88875C8.32512 6.6593 8.71947 6.52631 9.12759 6.50407C9.53571 6.48184 9.94218 6.57119 10.3033 6.76254C10.6645 6.95388 10.9667 7.24 11.1776 7.59015C11.3884 7.94031 11.4999 8.34127 11.5 8.75ZM6.25 5.25C6.25 5.39834 6.20601 5.54334 6.1236 5.66668C6.04119 5.79001 5.92406 5.88614 5.78701 5.94291C5.64997 5.99968 5.49917 6.01453 5.35368 5.98559C5.2082 5.95665 5.07456 5.88522 4.96967 5.78033C4.86478 5.67544 4.79335 5.5418 4.76441 5.39632C4.73547 5.25083 4.75032 5.10003 4.80709 4.96299C4.86386 4.82594 4.95999 4.70881 5.08332 4.6264C5.20666 4.54399 5.35166 4.5 5.5 4.5C5.69891 4.5 5.88968 4.57902 6.03033 4.71967C6.17098 4.86032 6.25 5.05109 6.25 5.25Z" fill="currentColor"/>
+          </svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+      const canvas = document.getElementById("dots");
+      const ctx = canvas.getContext("2d");
+
+      const PITCH = 14;       // 2px dot + 12px gap
+      const DOT = 2;          // dot size
+      const R = 128;          // cursor influence radius
+      const MAX_PUSH = 8;     // how far dots spread away from the cursor (fisheye)
+
+      // Darkness is a continuous field; quantize into a handful of greys
+      // so we can batch the draw, but the field itself flows over time.
+      const LEVELS = 9;
+      const LIGHT = 220, DARK = 150;
+      const grey = [];
+      for (let i = 0; i < LEVELS; i++) {
+        const v = Math.round(LIGHT - (i / (LEVELS - 1)) * (LIGHT - DARK));
+        grey.push("rgb(" + v + "," + v + "," + v + ")");
+      }
+
+      // Animated value field — domain-warped sum of sines, the classic
+      // "shader" look: darkness drifts and swirls across the grid.
+      function field(x, y, t) {
+        const wx = x + Math.sin(y * 0.020 + t * 0.6) * 9;
+        const wy = y + Math.cos(x * 0.020 - t * 0.5) * 9;
+        let n = Math.sin(wx * 0.040 + t * 0.8)
+              + Math.cos(wy * 0.045 - t * 0.6)
+              + Math.sin((wx + wy) * 0.028 + t) * 0.7;
+        return n / 2.7 * 0.5 + 0.5;          // ~0..1
+      }
+
+      let dpr = 1, W = 0, H = 0, cols = 0, rows = 0;
+      let shadeBuf = new Uint8Array(0);      // per-dot quantized darkness, refreshed each frame
+
+      function resize() {
+        dpr = Math.min(2, window.devicePixelRatio || 1);
+        W = window.innerWidth; H = window.innerHeight;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cols = Math.ceil(W / PITCH) + 1;
+        rows = Math.ceil(H / PITCH) + 1;
+        shadeBuf = new Uint8Array(cols * rows);
+      }
+
+      const mouse = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4, active: false, power: 0 };
+      window.addEventListener("pointermove", (e) => {
+        mouse.tx = e.clientX; mouse.ty = e.clientY;
+        if (!mouse.active) { mouse.x = mouse.tx; mouse.y = mouse.ty; }
+        mouse.active = true;
+      });
+      window.addEventListener("pointerdown", (e) => {
+        mouse.tx = e.clientX; mouse.ty = e.clientY; mouse.active = true;
+      });
+      const sleep = () => { mouse.active = false; };
+      window.addEventListener("pointerleave", sleep);
+      window.addEventListener("blur", sleep);
+
+      const half = DOT / 2;
+      const R2 = R * R;
+
+      function draw(t) {
+        ctx.clearRect(0, 0, W, H);
+        const mx = mouse.x, my = mouse.y, power = mouse.power;
+        const useCursor = power > 0.003;
+
+        // 1) sample the flowing darkness field for every dot
+        for (let j = 0; j < rows; j++) {
+          const y = j * PITCH, rowOff = j * cols;
+          for (let i = 0; i < cols; i++) {
+            const u = field(i * PITCH, y, t);          // 0..1
+            const d = u * u;                           // bias toward light; patches go dark
+            let lvl = (d * LEVELS) | 0;
+            if (lvl >= LEVELS) lvl = LEVELS - 1;
+            else if (lvl < 0) lvl = 0;
+            shadeBuf[rowOff + i] = lvl;
+          }
+        }
+
+        // 2) one batched fill pass per grey level
+        for (let lvl = 0; lvl < LEVELS; lvl++) {
+          ctx.fillStyle = grey[lvl];
+          ctx.beginPath();
+          let drew = false;
+          for (let j = 0; j < rows; j++) {
+            const rowOff = j * cols, baseY = j * PITCH;
+            for (let i = 0; i < cols; i++) {
+              if (shadeBuf[rowOff + i] !== lvl) continue;
+              let x = i * PITCH, y = baseY;
+              if (useCursor) {
+                const dx = mx - x, dy = my - y;
+                const d2 = dx * dx + dy * dy;
+                if (d2 < R2 && d2 > 0.01) {
+                  const dd = Math.sqrt(d2);
+                  const f = 1 - dd / R;                // 1 at cursor, 0 at edge
+                  const push = MAX_PUSH * f * f * power;
+                  x -= (dx / dd) * push;               // away from cursor (fisheye spread)
+                  y -= (dy / dd) * push;
+                }
+              }
+              ctx.rect(x - half, y - half, DOT, DOT);
+              drew = true;
+            }
+          }
+          if (drew) ctx.fill();
+        }
+      }
+
+      let start = 0;
+      function frame(ts) {
+        if (!start) start = ts;
+        const t = (ts - start) * 0.0007;     // gentle drift
+        mouse.x += (mouse.tx - mouse.x) * 0.2;
+        mouse.y += (mouse.ty - mouse.y) * 0.2;
+        mouse.power += ((mouse.active ? 1 : 0) - mouse.power) * 0.12;
+        draw(t);
+        raf = requestAnimationFrame(frame);
+      }
+
+      // Continuous animation, but pause it when there's nothing to show:
+      // on mobile the full-bleed card covers the field, and honor
+      // prefers-reduced-motion.
+      let raf = 0;
+      const hideMQ = window.matchMedia("(max-width: 400px)");
+      const reduceMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+      function play() {
+        if (raf || hideMQ.matches) return;
+        if (reduceMQ.matches) { start = 0; draw(0); return; }  // static frame only
+        start = 0; raf = requestAnimationFrame(frame);
+      }
+      function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+
+      window.addEventListener("resize", () => { resize(); if (hideMQ.matches) { stop(); ctx.clearRect(0, 0, W, H); } else play(); });
+      hideMQ.addEventListener("change", () => { if (hideMQ.matches) { stop(); ctx.clearRect(0, 0, W, H); } else play(); });
+      reduceMQ.addEventListener("change", () => { stop(); play(); });
+      document.addEventListener("visibilitychange", () => { document.hidden ? stop() : play(); });
+
+      resize();
+      play();
+    })();
+  </script>
+</body>
+</html>
